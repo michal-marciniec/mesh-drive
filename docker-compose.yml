@@ -1,0 +1,34 @@
+version: '2.2'
+
+services:
+  config-server:
+    build: config-server
+    image: config-server
+    restart: always
+    ports:
+      - 8888:8888
+
+  service-discovery:
+    build: service-discovery
+    image: service-discovery
+    restart: always
+    ports:
+      - 8761:8761
+    depends_on:
+      config-server:
+        condition: service_healthy
+
+#  gateway:
+#    build: gateway
+#    restart: always
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      service-discovery:
+#        condition: service_healthy
+#
+#  hello-service:
+#    build: hello-service
+#    restart: always
+#    depends_on:
+#      - gateway

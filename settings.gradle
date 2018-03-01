@@ -1,0 +1,4 @@
+include 'config-server'
+include 'gateway'
+include 'hello-service'
+include 'service-discovery'
