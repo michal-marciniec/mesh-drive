@@ -12,14 +12,12 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
-        classpath "se.transmode.gradle:gradle-docker:1.2"
     }
 }
 
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-spring'
 apply plugin: 'idea'
-apply plugin: 'docker'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -62,28 +60,4 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
-}
-
-task reloadContainer(type: Exec) {
-    group 'deployment'
-    dependsOn 'buildImage'
-
-    workingDir '..'
-    commandLine 'docker-compose', 'up', '-d', '--no-deps', jar.baseName.toLowerCase()
-}
-
-task killContainer(type: Exec) {
-    group 'deployment'
-    dependsOn 'killContainer'
-
-    workingDir '..'
-    commandLine 'docker-compose', 'kill', jar.baseName.toLowerCase()
-}
-
-task buildImage(type: Exec) {
-    group 'deployment'
-    dependsOn 'build'
-
-    commandLine 'docker', 'rmi', '-f', jar.baseName.toLowerCase()
-    commandLine 'docker', 'build', '--no-cache', '-t', jar.baseName.toLowerCase(), '.'
 }

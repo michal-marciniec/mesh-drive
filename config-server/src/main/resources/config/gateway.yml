@@ -1,6 +1,0 @@
-zuul:
-  ignoredServices: '*'
-  routes:
-    hello:
-      path: /message/**
-      serviceId: hello

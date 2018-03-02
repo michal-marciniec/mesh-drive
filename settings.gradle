@@ -1,4 +1,4 @@
 include 'config-server'
+include 'service-discovery'
 include 'gateway'
 include 'hello-service'
-include 'service-discovery'

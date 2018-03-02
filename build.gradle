@@ -1,0 +1,36 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "se.transmode.gradle:gradle-docker:1.2"
+    }
+}
+
+apply plugin: 'docker'
+
+subprojects {
+    task rebuildImage(type: Exec) {
+        group 'deployment'
+        dependsOn ":${project.name}:build"
+
+        commandLine 'docker', 'rmi', '-f', project.name
+        commandLine 'docker', 'build', '--no-cache', '-t', project.name, '.'
+    }
+
+    task killContainer(type: Exec) {
+        group 'deployment'
+        dependsOn ":${project.name}:rebuildImage"
+
+        workingDir '..'
+        commandLine 'docker-compose', 'kill', project.name
+    }
+
+    task deploy(type: Exec) {
+        group 'deployment'
+        dependsOn ":${project.name}:killContainer"
+
+        workingDir '..'
+        commandLine 'docker-compose', 'up', '-d', '--no-deps', project.name
+    }
+}
